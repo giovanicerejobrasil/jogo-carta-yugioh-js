@@ -69,11 +69,11 @@ async function createCardImage(idCard, fieldSide) {
     cardImage.addEventListener("click", () => {
       setCardsField(cardImage.getAttribute("data-id"));
     });
-  }
 
-  cardImage.addEventListener("mouseover", () => {
-    drawSelectedCard(idCard);
-  });
+    cardImage.addEventListener("mouseover", () => {
+      drawSelectedCard(idCard);
+    });
+  }
 
   return cardImage;
 }
@@ -85,6 +85,12 @@ async function drawCards(cardNumbers, fieldSide) {
 
     document.getElementById(fieldSide).appendChild(cardImage);
   }
+}
+
+async function drawSelectedCard(index) {
+  state.cardSprites.avatar.src = cardData[index].img;
+  state.cardSprites.name.textContent = cardData[index].name;
+  state.cardSprites.type.textContent = `Attribute : ${cardData[index].type}`;
 }
 
 function init() {
