@@ -79,21 +79,44 @@ async function createCardImage(idCard, fieldSide) {
   return cardImage;
 }
 
+async function showHiddenCardFieldsImage(isShow) {
+  if (isShow) {
+    state.fieldCards.player.style.display = "block";
+    state.fieldCards.computer.style.display = "block";
+  }
+
+  if (!isShow) {
+    state.fieldCards.player.style.display = "none";
+    state.fieldCards.computer.style.display = "none";
+  }
+}
+
+async function hiddenCardDetails() {
+  state.cardSprites.avatar.src = "";
+  state.cardSprites.name.textContent = "Select a card";
+  state.cardSprites.type.textContent = "";
+}
+
 async function setCardsField(cardId) {
   await removeAllCardsImages();
 
   let computerCardId = await getRandomCardID();
 
-  state.fieldCards.player.style.display = "block";
-  state.fieldCards.computer.style.display = "block";
+  await showHiddenCardFieldsImage(true);
 
-  state.fieldCards.player.setAttribute("src", cardData[cardId].img);
-  state.fieldCards.computer.setAttribute("src", cardData[computerCardId].img);
+  await hiddenCardDetails();
+
+  await drawCardsInField(cardId, computerCardId);
 
   let duelResults = await checkDuelResults(cardId, computerCardId);
 
   await updateScore();
   await drawButton(duelResults);
+}
+
+async function drawCardsInField(cardId, computerCardId) {
+  state.fieldCards.player.setAttribute("src", cardData[cardId].img);
+  state.fieldCards.computer.setAttribute("src", cardData[computerCardId].img);
 }
 
 async function removeAllCardsImages() {
@@ -152,10 +175,6 @@ async function drawSelectedCard(index) {
 }
 
 async function resetDuel() {
-  state.cardSprites.avatar.src = "";
-  state.cardSprites.name.textContent = "Select a card";
-  state.cardSprites.type.textContent = "";
-
   state.actions.button.style.display = "none";
 
   state.fieldCards.player.style.display = "none";
@@ -170,6 +189,8 @@ async function playAudio(status) {
 }
 
 function init() {
+  showHiddenCardFieldsImage(false);
+
   drawCards(5, state.playersSides.player1);
   drawCards(5, state.playersSides.player2);
 }
