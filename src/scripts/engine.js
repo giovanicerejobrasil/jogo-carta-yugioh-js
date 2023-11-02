@@ -188,11 +188,19 @@ async function playAudio(status) {
   audio.play();
 }
 
+async function playBGMusic() {
+  const bgm = document.querySelector("#bgm");
+  bgm.volume = 0.2;
+  bgm.play();
+}
+
 function init() {
   showHiddenCardFieldsImage(false);
 
   drawCards(5, state.playersSides.player1);
   drawCards(5, state.playersSides.player2);
+
+  playBGMusic();
 }
 
 init();
