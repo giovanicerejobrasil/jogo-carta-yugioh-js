@@ -13,14 +13,15 @@ const state = {
     player: document.querySelector("#player-field-card"),
     computer: document.querySelector("#computer-field-card"),
   },
+  playersSides: {
+    player1: "player-cards",
+    player1Box: document.querySelector("#player-cards"),
+    player2: "computer-cards",
+    player2Box: document.querySelector("#computer-cards"),
+  },
   actions: {
     button: document.querySelector("#next-duel"),
   },
-};
-
-const playersSides = {
-  player1: "player-cards",
-  player2: "computer-cards",
 };
 
 const pathImages = "./src/assets/icons";
@@ -65,7 +66,7 @@ async function createCardImage(idCard, fieldSide) {
   cardImage.setAttribute("data-id", idCard);
   cardImage.classList.add("card");
 
-  if (fieldSide === playersSides.player1) {
+  if (fieldSide === state.playersSides.player1) {
     cardImage.addEventListener("click", () => {
       setCardsField(cardImage.getAttribute("data-id"));
     });
@@ -96,8 +97,43 @@ async function setCardsField(cardId) {
 }
 
 async function removeAllCardsImages() {
-  state.fieldCards.player.removeAttribute("src");
-  state.fieldCards.computer.removeAttribute("src");
+  let { player1Box, player2Box } = state.playersSides;
+
+  let imgElements = player1Box.querySelectorAll("img");
+  imgElements.forEach((img) => img.remove());
+
+  imgElements = player2Box.querySelectorAll("img");
+  imgElements.forEach((img) => img.remove());
+}
+
+async function checkDuelResults(playerCardId, computerCardId) {
+  let duelResults = "Draw";
+  let playerCard = cardData[playerCardId];
+
+  if (playerCard.winOf.includes(computerCardId)) {
+    duelResults = "Win";
+    state.score.playerScore++;
+  }
+
+  if (playerCard.loseOf.includes(computerCardId)) {
+    duelResults = "Lose";
+    state.score.computerScore++;
+  }
+
+  return duelResults;
+}
+
+async function drawButton(text) {
+  state.actions.button.textContent = text;
+  state.actions.button.style.display = "block";
+}
+
+async function updateScore() {
+  state.score.scoreBox.textContent = `WIN : ${state.score.playerScore} | LOSE : ${state.score.computerScore}`;
+}
+
+async function resetDuel() {
+  //
 }
 
 async function drawCards(cardNumbers, fieldSide) {
@@ -116,8 +152,8 @@ async function drawSelectedCard(index) {
 }
 
 function init() {
-  drawCards(5, playersSides.player1);
-  drawCards(5, playersSides.player2);
+  drawCards(5, state.playersSides.player1);
+  drawCards(5, state.playersSides.player2);
 }
 
 init();
